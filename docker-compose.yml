@@ -10,11 +10,40 @@ services:
         image: 'bitnami/kafka:latest'
         ports:
             - '9092:9092'
+        volumes:
+            - ./files:/files
+            - /var/run/docker.sock:/var/run/docker.sock
         environment:
             - KAFKA_BROKER_ID=1
             - KAFKA_LISTENERS=PLAINTEXT://:9092
             - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://127.0.0.1:9092
             - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
             - ALLOW_PLAINTEXT_LISTENER=yes
+            - JMX_PORT=9999
+#            - KAFKA_OPTS=-javaagent:/files/jmx_prometheus_javaagent-0.10.jar=7071:/files/kafka-0-8-2.yml
+
         depends_on:
             - zookeeper
+
+    prometheus:
+        image: prom/prometheus
+        user: root
+        volumes:
+            - ./config2:/prometheus
+            - ./data/prometheus:/data
+        command:
+            - '--config.file=/prometheus/prometheus.yml'
+            - '--storage.tsdb.path=/data'
+        ports:
+            - 9090:9090
+        links:
+            -   kafka
+        restart: always
+        networks:
+            - promnet
+
+networks:
+    promnet:
+        driver: bridge
+
+
