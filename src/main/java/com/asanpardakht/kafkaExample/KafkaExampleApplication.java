@@ -1,5 +1,6 @@
 package com.asanpardakht.kafkaExample;
 
+import com.asanpardakht.kafkaExample.entity.Greeting;
 import com.asanpardakht.kafkaExample.service.SendMessageService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -20,6 +21,7 @@ public class KafkaExampleApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		sendMessageService.sendMessage("Hello Kafka");
+		//sendMessageService.sendMessage("Hello Kafka");
+		sendMessageService.sendGreetingMessage(new Greeting("Hello", "World" ));
 	}
 }

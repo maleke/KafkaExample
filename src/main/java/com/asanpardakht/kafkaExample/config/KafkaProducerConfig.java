@@ -1,7 +1,9 @@
 package com.asanpardakht.kafkaExample.config;
 
+import com.asanpardakht.kafkaExample.entity.Greeting;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,5 +36,25 @@ public class KafkaProducerConfig {
     @Bean
     public KafkaTemplate<String, String> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
+    }
+
+    @Bean
+    public ProducerFactory<String, Greeting> greetingProducerFactory() {
+        Map<String, Object> greetingConfigProps = new HashMap<>();
+        greetingConfigProps.put(
+                ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
+                bootstrapAddress);
+        greetingConfigProps.put(
+                ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
+                StringSerializer.class);
+        greetingConfigProps.put(
+                ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+                JsonSerializer.class);
+        return new DefaultKafkaProducerFactory<>(greetingConfigProps);
+    }
+
+    @Bean
+    public KafkaTemplate<String, Greeting> greetingKafkaTemplate() {
+        return new KafkaTemplate<>(greetingProducerFactory());
     }
 }
