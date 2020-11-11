@@ -6,10 +6,14 @@ services:
             - '2181:2181'
         environment:
             - ALLOW_ANONYMOUS_LOGIN=yes
+        networks:
+            - promnet
+
     kafka:
         image: 'bitnami/kafka:latest'
         ports:
             - '9092:9092'
+            - '7071:7071'
         volumes:
             - ./files:/files
             - /var/run/docker.sock:/var/run/docker.sock
@@ -20,16 +24,18 @@ services:
             - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
             - ALLOW_PLAINTEXT_LISTENER=yes
             - JMX_PORT=9999
-#            - KAFKA_OPTS=-javaagent:/files/jmx_prometheus_javaagent-0.10.jar=7071:/files/kafka-0-8-2.yml
-
+            - KAFKA_OPTS=-javaagent:/files/jmx_prometheus_javaagent-0.6.jar=7071:/files/prometheus-config.yml
         depends_on:
             - zookeeper
+        networks:
+            - promnet
+
 
     prometheus:
         image: prom/prometheus
         user: root
         volumes:
-            - ./config2:/prometheus
+            - ./config:/prometheus
             - ./data/prometheus:/data
         command:
             - '--config.file=/prometheus/prometheus.yml'
@@ -37,7 +43,7 @@ services:
         ports:
             - 9090:9090
         links:
-            -   kafka
+            - kafka
         restart: always
         networks:
             - promnet
@@ -45,5 +51,6 @@ services:
 networks:
     promnet:
         driver: bridge
+
 
 

@@ -21,7 +21,9 @@ public class KafkaExampleApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		//sendMessageService.sendMessage("Hello Kafka");
-		sendMessageService.sendGreetingMessage(new Greeting("Hello", "World" ));
+    // sendMessageService.sendMessage("Hello Kafka");
+    for (int i = 0; i < 10; i++) {
+      sendMessageService.sendGreetingMessage(new Greeting("Hello", "World"));
+		 }
 	}
 }
