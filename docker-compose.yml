@@ -48,6 +48,14 @@ services:
         networks:
             - promnet
 
+    grafana:
+        container_name: grafana
+        ports:
+            - '3000:3000'
+        image: grafana/grafana
+        networks:
+            - promnet
+
 networks:
     promnet:
         driver: bridge

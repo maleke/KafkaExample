@@ -198,4 +198,4 @@ buildNumber.properties
 .mvn/wrapper/maven-wrapper.jar
 
 # End of https://www.toptal.com/developers/gitignore/api/java,maven,intellij+all,eclipse
-data
+files/kafka_rev1.json
